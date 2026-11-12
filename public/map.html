@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campus Recovery Map – FINDIT</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <main class="main-content">
+    <div class="section-header">
+      <div>
+        <h1 class="section-title" data-i18n="nav_map">Interactive Campus Recovery Map</h1>
+        <p style="font-size:0.88rem; color:var(--text-muted);">
+          Click on any campus zone to view active reports. Toggle Heatmap mode to visualize report density.
+        </p>
+      </div>
+
+      <!-- Controls -->
+      <div style="display:flex; align-items:center; gap:1rem;">
+        <label style="display:flex; align-items:center; gap:0.5rem; font-weight:600; cursor:pointer;">
+          <input type="checkbox" id="heatmapToggle" onchange="toggleHeatmap()" style="width:18px; height:18px; cursor:pointer;" />
+          <span>🔥 Heatmap View</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Map Container -->
+    <div class="map-card">
+      <div class="map-controls">
+        <div class="map-legend">
+          <div class="legend-item">
+            <span class="legend-dot" style="background:#ef4444;"></span>
+            <span>Red Pins: Lost Items</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot" style="background:#10b981;"></span>
+            <span>Green Pins: Found Items</span>
+          </div>
+          <div class="legend-item">
+            <span style="font-size:0.8rem; color:#64748b;">(Click any zone to filter)</span>
+          </div>
+        </div>
+        <div id="selectedZoneLabel" style="font-weight:700; color:var(--primary);">
+          Showing: All Campus Zones
+        </div>
+      </div>
+
+      <!-- SVG Map -->
+      <div class="map-svg-container">
+        <svg viewBox="0 0 900 560" class="map-svg" xmlns="http://www.w3.org/2000/svg">
+          <!-- Background / Campus Lawns -->
+          <rect width="900" height="560" fill="#f1f5f9" />
+          <path d="M 0,280 Q 450,260 900,280" stroke="#e2e8f0" stroke-width="40" fill="none" opacity="0.6"/>
+          <path d="M 450,0 Q 430,280 450,560" stroke="#e2e8f0" stroke-width="40" fill="none" opacity="0.6"/>
+
+          <!-- 1. LIBRARY (Top Left) -->
+          <g class="campus-zone-group" onclick="selectZone('Library')">
+            <rect id="zone-Library" class="campus-zone" x="50" y="40" width="220" height="130" rx="10" />
+            <text x="160" y="90" class="zone-label">📚 Library</text>
+            <!-- Pins -->
+            <g transform="translate(95, 125)">
+              <rect x="0" y="0" width="60" height="24" rx="12" fill="#fee2e2" stroke="#ef4444" stroke-width="1.5"/>
+              <text x="30" y="16" text-anchor="middle" fill="#dc2626" class="zone-pin">🔴 <tspan id="pin-lost-Library">0</tspan></text>
+            </g>
+            <g transform="translate(165, 125)">
+              <rect x="0" y="0" width="60" height="24" rx="12" fill="#d1fae5" stroke="#10b981" stroke-width="1.5"/>
+              <text x="30" y="16" text-anchor="middle" fill="#059669" class="zone-pin">🟢 <tspan id="pin-found-Library">0</tspan></text>
+            </g>
+          </g>
+
+          <!-- 2. MAIN BLOCK (Center Top/Mid) -->
+          <g class="campus-zone-group" onclick="selectZone('Main Block')">
+            <rect id="zone-Main Block" class="campus-zone" x="330" y="30" width="240" height="150" rx="12" />
+            <text x="450" y="90" class="zone-label">🏛️ Main Block (Admin)</text>
+            <!-- Pins -->
+            <g transform="translate(385, 135)">
+              <rect x="0" y="0" width="60" height="24" rx="12" fill="#fee2e2" stroke="#ef4444" stroke-width="1.5"/>
+              <text x="30" y="16" text-anchor="middle" fill="#dc2626" class="zone-pin">🔴 <tspan id="pin-lost-Main-Block">0</tspan></text>
+            </g>
+            <g transform="translate(455, 135)">
+              <rect x="0" y="0" width="60" height="24" rx="12" fill="#d1fae5" stroke="#10b981" stroke-width="1.5"/>
+              <text x="30" y="16" text-anchor="middle" fill="#059669" class="zone-pin">🟢 <tspan id="pin-found-Main-Block">0</tspan></text>
+            </g>
+          </g>
+
+          <!-- 3. COMPUTER LAB (Top Right) -->
+          <g class="campus-zone-group" onclick="selectZone('Computer Lab')">
+            <rect id="zone-Computer Lab" class="campus-zone" x="630" y="40" width="220" height="130" rx="10" />
+            <text x="740" y="90" class="zone-label">💻 Computer Lab</text>
+            <!-- Pins -->
+            <g transform="translate(675, 125)">
+              <rect x="0" y="0" width="60" height="24" rx="12" fill="#fee2e2" stroke="#ef4444" stroke-width="1.5"/>
+              <text x="30" y="16" text-anchor="middle" fill="#dc2626" class="zone-pin">🔴 <tspan id="pin-lost-Computer-Lab">0</tspan></text>
+            </g>
+            <g transform="translate(745, 125)">
+              <rect x="0" y="0" width="60" height="24" rx="12" fill="#d1fae5" stroke="#10b981" stroke-width="1.5"/>
+              <text x="30" y="16" text-anchor="middle" fill="#059669" class="zone-pin">🟢 <tspan id="pin-found-Computer-Lab">0</tspan></text>
+            </g>
+          </g>
+
+          <!-- 4. CANTEEN (Mid Left) -->
+          <g class="campus-zone-group" onclick="selectZone('Canteen')">
+            <rect id="zone-Canteen" class="campus-zone" x="50" y="210" width="220" height="130" rx="10" />
+            <text x="160" y="260" class="zone-label">☕ Canteen &amp; Food Court</text>
+            <!-- Pins -->
+            <g transform="translate(95, 295)">
+              <rect x="0" y="0" width="60" height="24" rx="12" fill="#fee2e2" stroke="#ef4444" stroke-width="1.5"/>
+              <text x="30" y="16" text-anchor="middle" fill="#dc2626" class="zone-pin">🔴 <tspan id="pin-lost-Canteen">0</tspan></text>
+            </g>
+            <g transform="translate(165, 295)">
+              <rect x="0" y="0" width="60" height="24" rx="12" fill="#d1fae5" stroke="#10b981" stroke-width="1.5"/>
+              <text x="30" y="16" text-anchor="middle" fill="#059669" class="zone-pin">🟢 <tspan id="pin-found-Canteen">0</tspan></text>
+            </g>
+          </g>
+
+          <!-- 5. AUDITORIUM (Mid Right) -->
+          <g class="campus-zone-group" onclick="selectZone('Auditorium')">
+            <rect id="zone-Auditorium" class="campus-zone" x="630" y="210" width="220" height="130" rx="10" />
+            <text x="740" y="260" class="zone-label">🎭 Auditorium Hall</text>
+            <!-- Pins -->
+            <g transform="translate(675, 295)">
+              <rect x="0" y="0" width="60" height="24" rx="12" fill="#fee2e2" stroke="#ef4444" stroke-width="1.5"/>
+              <text x="30" y="16" text-anchor="middle" fill="#dc2626" class="zone-pin">🔴 <tspan id="pin-lost-Auditorium">0</tspan></text>
+            </g>
+            <g transform="translate(745, 295)">
+              <rect x="0" y="0" width="60" height="24" rx="12" fill="#d1fae5" stroke="#10b981" stroke-width="1.5"/>
+              <text x="30" y="16" text-anchor="middle" fill="#059669" class="zone-pin">🟢 <tspan id="pin-found-Auditorium">0</tspan></text>
+            </g>
+          </g>
+
+          <!-- 6. HOSTEL (Bottom Left) -->
+          <g class="campus-zone-group" onclick="selectZone('Hostel')">
+            <rect id="zone-Hostel" class="campus-zone" x="50" y="380" width="220" height="135" rx="10" />
+            <text x="160" y="430" class="zone-label">🏢 Student Hostels</text>
+            <!-- Pins -->
+            <g transform="translate(95, 465)">
+              <rect x="0" y="0" width="60" height="24" rx="12" fill="#fee2e2" stroke="#ef4444" stroke-width="1.5"/>
+              <text x="30" y="16" text-anchor="middle" fill="#dc2626" class="zone-pin">🔴 <tspan id="pin-lost-Hostel">0</tspan></text>
+            </g>
+            <g transform="translate(165, 465)">
+              <rect x="0" y="0" width="60" height="24" rx="12" fill="#d1fae5" stroke="#10b981" stroke-width="1.5"/>
+              <text x="30" y="16" text-anchor="middle" fill="#059669" class="zone-pin">🟢 <tspan id="pin-found-Hostel">0</tspan></text>
+            </g>
+          </g>
+
+          <!-- 7. PARKING (Bottom Center) -->
+          <g class="campus-zone-group" onclick="selectZone('Parking')">
+            <rect id="zone-Parking" class="campus-zone" x="330" y="270" width="240" height="150" rx="10" />
+            <text x="450" y="330" class="zone-label">🚗 Campus Parking</text>
+            <!-- Pins -->
+            <g transform="translate(385, 375)">
+              <rect x="0" y="0" width="60" height="24" rx="12" fill="#fee2e2" stroke="#ef4444" stroke-width="1.5"/>
+              <text x="30" y="16" text-anchor="middle" fill="#dc2626" class="zone-pin">🔴 <tspan id="pin-lost-Parking">0</tspan></text>
+            </g>
+            <g transform="translate(455, 375)">
+              <rect x="0" y="0" width="60" height="24" rx="12" fill="#d1fae5" stroke="#10b981" stroke-width="1.5"/>
+              <text x="30" y="16" text-anchor="middle" fill="#059669" class="zone-pin">🟢 <tspan id="pin-found-Parking">0</tspan></text>
+            </g>
+          </g>
+
+          <!-- 8. SPORTS GROUND (Bottom Right) -->
+          <g class="campus-zone-group" onclick="selectZone('Sports Ground')">
+            <rect id="zone-Sports Ground" class="campus-zone" x="630" y="380" width="220" height="135" rx="10" />
+            <text x="740" y="430" class="zone-label">⚽ Sports Ground</text>
+            <!-- Pins -->
+            <g transform="translate(675, 465)">
+              <rect x="0" y="0" width="60" height="24" rx="12" fill="#fee2e2" stroke="#ef4444" stroke-width="1.5"/>
+              <text x="30" y="16" text-anchor="middle" fill="#dc2626" class="zone-pin">🔴 <tspan id="pin-lost-Sports-Ground">0</tspan></text>
+            </g>
+            <g transform="translate(745, 465)">
+              <rect x="0" y="0" width="60" height="24" rx="12" fill="#d1fae5" stroke="#10b981" stroke-width="1.5"/>
+              <text x="30" y="16" text-anchor="middle" fill="#059669" class="zone-pin">🟢 <tspan id="pin-found-Sports-Ground">0</tspan></text>
+            </g>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Zone Specific Items Section -->
+    <div class="section-header">
+      <h2 id="zoneTitle">Active Items: All Zones</h2>
+      <button class="btn btn-sm btn-outline" onclick="selectZone(null)">Show All Zones</button>
+    </div>
+
+    <div class="items-grid" id="zoneItemsContainer">
+      <div style="grid-column:1/-1; text-align:center; padding:2rem; color:var(--text-muted);">
+        Loading zone items...
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/app.js"></script>
+  <script>
+    let locationStats = {};
+    let selectedZone = null;
+    let isHeatmapActive = false;
+
+    async function loadMapData() {
+      try {
+        const res = await fetch('/api/stats');
+        const data = await res.json();
+        locationStats = data.locationStats || {};
+
+        // Update pin counters on SVG
+        for (const zone in locationStats) {
+          const stats = locationStats[zone];
+          const cleanId = zone.replace(/\s+/g, '-');
+          const lostEl = document.getElementById(`pin-lost-${cleanId}`);
+          const foundEl = document.getElementById(`pin-found-${cleanId}`);
+          if (lostEl) lostEl.textContent = stats.lost;
+          if (foundEl) foundEl.textContent = stats.found;
+        }
+
+        applyHeatmapColors();
+      } catch (e) {
+        console.error('Failed to load map stats:', e);
+      }
+    }
+
+    function toggleHeatmap() {
+      isHeatmapActive = document.getElementById('heatmapToggle').checked;
+      applyHeatmapColors();
+    }
+
+    function applyHeatmapColors() {
+      const zones = ['Library', 'Canteen', 'Computer Lab', 'Main Block', 'Hostel', 'Sports Ground', 'Parking', 'Auditorium'];
+      
+      let maxTotal = 1;
+      zones.forEach(z => {
+        if (locationStats[z] && locationStats[z].total > maxTotal) {
+          maxTotal = locationStats[z].total;
+        }
+      });
+
+      zones.forEach(z => {
+        const el = document.getElementById(`zone-${z}`);
+        if (!el) return;
+
+        if (isHeatmapActive) {
+          const count = locationStats[z] ? locationStats[z].total : 0;
+          const ratio = count / maxTotal;
+
+          // Interpolate heatmap shades from soft amber to high-intensity red/purple
+          if (count === 0) {
+            el.style.fill = '#f8fafc';
+            el.style.stroke = '#cbd5e1';
+          } else if (ratio < 0.35) {
+            el.style.fill = '#fed7aa'; // light orange
+            el.style.stroke = '#fb923c';
+          } else if (ratio < 0.7) {
+            el.style.fill = '#f87171'; // coral red
+            el.style.stroke = '#ef4444';
+          } else {
+            el.style.fill = '#dc2626'; // intense red
+            el.style.stroke = '#991b1b';
+          }
+        } else {
+          // Normal mode
+          el.style.fill = '';
+          el.style.stroke = '';
+        }
+      });
+    }
+
+    async function selectZone(zone) {
+      selectedZone = zone;
+      document.querySelectorAll('.campus-zone').forEach(el => el.classList.remove('active-zone'));
+
+      const label = document.getElementById('selectedZoneLabel');
+      const title = document.getElementById('zoneTitle');
+
+      if (zone) {
+        const targetEl = document.getElementById(`zone-${zone}`);
+        if (targetEl) targetEl.classList.add('active-zone');
+        label.textContent = `Selected: ${zone}`;
+        title.textContent = `Reports in ${zone}`;
+      } else {
+        label.textContent = 'Showing: All Campus Zones';
+        title.textContent = 'Active Items: All Zones';
+      }
+
+      loadZoneItems(zone);
+    }
+
+    async function loadZoneItems(zone) {
+      const container = document.getElementById('zoneItemsContainer');
+      try {
+        let url = '/api/items';
+        if (zone) url += `?location=${encodeURIComponent(zone)}`;
+        const res = await fetch(url);
+        const items = await res.json();
+
+        if (items.length === 0) {
+          container.innerHTML = `
+            <div style="grid-column:1/-1; text-align:center; padding:3rem; background:#fff; border-radius:12px; border:1px solid #e2e8f0;">
+              <h3>No reports found for ${zone || 'this area'}</h3>
+              <p style="color:#64748b; margin-top:0.35rem;">This campus zone has zero open lost or found reports.</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = items.map(item => `
+          <div class="item-card" onclick="openItemDetailsModal(${item.id})" style="cursor:pointer;">
+            <div class="item-thumb-wrapper">
+              <span class="item-type-badge ${item.type === 'lost' ? 'type-lost' : 'type-found'}">${item.type}</span>
+              <span class="item-status-pill status-${item.status.toLowerCase().replace(/\s+/g, '-')}">${escapeHtml(item.status)}</span>
+              <img src="${item.image_url || '/images/default-item.svg'}" alt="${escapeHtml(item.title)}" class="item-thumb" onerror="this.src='/images/default-item.svg'" />
+            </div>
+            <div class="item-card-body">
+              <div class="item-card-title">${escapeHtml(item.title)}</div>
+              <div class="item-meta-row">
+                <span class="meta-chip">🏷️ ${escapeHtml(item.category)}</span>
+                <span class="meta-chip">🎨 ${escapeHtml(item.color)}</span>
+                <span class="meta-chip">📍 ${escapeHtml(item.location)}</span>
+                <span class="meta-chip">📅 ${escapeHtml(item.date_lost_or_found)}</span>
+              </div>
+              <p class="item-desc">${escapeHtml(item.description)}</p>
+              
+              <div class="item-card-footer" onclick="event.stopPropagation()">
+                <span style="font-size:0.75rem; color:#64748b;">Reported by ${escapeHtml(item.reporter_name || 'Student')}</span>
+                <div style="display:flex; gap:0.4rem;">
+                  <button class="btn btn-sm btn-outline" onclick="openItemDetailsModal(${item.id})">Details</button>
+                  ${item.type === 'found' && item.status !== 'Returned' ? (
+                    currentUser && item.user_id === currentUser.id ? `
+                      <span style="font-size:0.75rem; color:#64748b; font-weight:600; padding:0.25rem 0.4rem;">Your Report</span>
+                    ` : `
+                      <button class="btn btn-sm btn-found" onclick="openClaimModal(${item.id}, '${escapeHtml(item.title).replace(/'/g, "\\'")}', ${item.user_id})">This is Mine</button>
+                    `
+                  ) : ''}
+                </div>
+              </div>
+            </div>
+          </div>
+        `).join('');
+        applyLanguage(currentLang);
+      } catch (e) {
+        container.innerHTML = `<div style="grid-column:1/-1; color:#ef4444; text-align:center;">Failed to load items.</div>`;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadMapData();
+      loadZoneItems(null);
+    });
+  </script>
+</body>
+</html>
+

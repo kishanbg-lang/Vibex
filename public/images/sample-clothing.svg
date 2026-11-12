@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="clothBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fdf4ff" />
+      <stop offset="100%" stop-color="#fae8ff" />
+    </linearGradient>
+
+    <!-- College Jacket Maroon / Crimson -->
+    <linearGradient id="jacketGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#991b1b" />
+      <stop offset="50%" stop-color="#b91c1c" />
+      <stop offset="100%" stop-color="#7f1d1d" />
+    </linearGradient>
+
+    <!-- Umbrella Canopy Gradient -->
+    <linearGradient id="umbGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1e3a8a" />
+      <stop offset="50%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#1e3a8a" />
+    </linearGradient>
+
+    <filter id="clothShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#701a75" flood-opacity="0.15" />
+    </filter>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="400" height="300" fill="url(#clothBg)" />
+
+  <!-- ITEM 1: COLLEGE VARSITY HOODIE / JACKET (Left Center) -->
+  <g filter="url(#clothShadow)" transform="translate(60, 45)">
+    <!-- Jacket Torso Shape -->
+    <path d="M 40 30 L 130 30 L 145 190 L 25 190 Z" fill="url(#jacketGrad)" stroke="#7f1d1d" stroke-width="1.5" />
+    
+    <!-- Left Sleeve -->
+    <path d="M 40 30 L 5 95 L 25 105 L 42 65 Z" fill="#7f1d1d" stroke="#581c87" stroke-width="1" />
+    <!-- Right Sleeve -->
+    <path d="M 130 30 L 165 95 L 145 105 L 128 65 Z" fill="#7f1d1d" stroke="#581c87" stroke-width="1" />
+
+    <!-- White Collar Trim -->
+    <path d="M 40 30 Q 85 55 130 30 L 130 38 Q 85 63 40 38 Z" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    
+    <!-- Zipper Running Down Center -->
+    <line x1="85" y1="55" x2="85" y2="190" stroke="#f1f5f9" stroke-width="3" stroke-dasharray="2 2" />
+    <!-- Zipper Pull Tab -->
+    <rect x="83" y="60" width="4" height="10" rx="1.5" fill="#ca8a04" />
+
+    <!-- College Varsity Letter "C" -->
+    <text x="60" y="95" font-family="'Georgia', serif" font-size="32" font-weight="bold" fill="#ffffff" stroke="#f59e0b" stroke-width="1">C</text>
+
+    <!-- Side Pockets -->
+    <path d="M 45 130 L 70 135 L 65 165 L 40 160 Z" fill="#7f1d1d" stroke="#fca5a5" stroke-width="1" />
+    <path d="M 125 130 L 100 135 L 105 165 L 130 160 Z" fill="#7f1d1d" stroke="#fca5a5" stroke-width="1" />
+
+    <!-- Bottom Ribbed Hem -->
+    <rect x="25" y="190" width="120" height="14" rx="3" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" />
+    <line x1="25" y1="197" x2="145" y2="197" stroke="#94a3b8" stroke-width="1.5" />
+  </g>
+
+  <!-- ITEM 2: COMPACT UMBRELLA (Right Side) -->
+  <g filter="url(#clothShadow)" transform="translate(245, 40) rotate(15)">
+    <!-- Folded Umbrella Body -->
+    <rect x="0" y="30" width="32" height="160" rx="16" fill="url(#umbGrad)" stroke="#1e3a8a" stroke-width="1.5" />
+    
+    <!-- Wrap Strap with Velcro Button -->
+    <rect x="0" y="95" width="32" height="12" fill="#1e3a8a" stroke="#60a5fa" stroke-width="0.8" />
+    <circle cx="24" cy="101" r="3" fill="#ca8a04" />
+
+    <!-- Top Metallic Tip -->
+    <polygon points="12,30 20,30 16,10" fill="#94a3b8" stroke="#475569" stroke-width="0.8" />
+
+    <!-- Bottom Curved J-Handle -->
+    <path d="M 16 190 L 16 215 Q 16 235 32 235 Q 46 235 46 220" fill="none" stroke="#1e293b" stroke-width="8" stroke-linecap="round" />
+  </g>
+
+  <!-- ITEM 3: TORTOISESHELL SPECTACLES / GLASSES (Bottom Center) -->
+  <g filter="url(#clothShadow)" transform="translate(190, 210) rotate(-10)">
+    <!-- Left Lens Frame -->
+    <circle cx="28" cy="28" r="22" fill="#e0f2fe" fill-opacity="0.35" stroke="#78350f" stroke-width="4.5" />
+    <path d="M 16 18 Q 28 14 38 20" stroke="#ffffff" stroke-width="2" fill="none" stroke-linecap="round" />
+
+    <!-- Right Lens Frame -->
+    <circle cx="85" cy="28" r="22" fill="#e0f2fe" fill-opacity="0.35" stroke="#78350f" stroke-width="4.5" />
+    <path d="M 73 18 Q 85 14 95 20" stroke="#ffffff" stroke-width="2" fill="none" stroke-linecap="round" />
+
+    <!-- Nose Bridge -->
+    <path d="M 50 25 Q 56.5 18 63 25" fill="none" stroke="#ca8a04" stroke-width="3" />
+
+    <!-- Frame Temple Arms (Folded) -->
+    <line x1="6" y1="26" x2="-10" y2="20" stroke="#78350f" stroke-width="4" stroke-linecap="round" />
+    <line x1="107" y1="26" x2="123" y2="20" stroke="#78350f" stroke-width="4" stroke-linecap="round" />
+  </g>
+</svg>
+

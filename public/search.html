@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search &amp; Filter – FINDIT</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <main class="main-content">
+    <div class="section-header">
+      <div>
+        <h1 class="section-title" data-i18n="nav_search">Search &amp; Filter Reports</h1>
+        <p style="font-size:0.88rem; color:var(--text-muted);">
+          Explore all active lost and found campus records with multi-attribute filtering.
+        </p>
+      </div>
+    </div>
+
+    <!-- Filter Form Bar -->
+    <div class="filter-card">
+      <form id="filterForm" class="filter-form" onsubmit="handleSearch(event)">
+        <div class="form-group" style="grid-column: 1 / -1;">
+          <label data-i18n="search_keyword">Keyword Search</label>
+          <input type="text" id="searchInput" class="form-control" placeholder="Search by title, description, brand, or color..." />
+        </div>
+
+        <div class="form-group">
+          <label data-i18n="search_report_type">Report Type</label>
+          <select id="typeFilter" class="form-control">
+            <option value="">All Types</option>
+            <option value="lost">Lost Only</option>
+            <option value="found">Found Only</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label data-i18n="form_category">Category</label>
+          <select id="categoryFilter" class="form-control">
+            <option value="">All Categories</option>
+            <option value="ID Card">ID Card</option>
+            <option value="Earphones">Earphones</option>
+            <option value="Electronic Devices">Electronic Devices</option>
+            <option value="Calculator">Calculator</option>
+            <option value="Stationery">Stationery</option>
+            <option value="Bottle">Bottle</option>
+            <option value="Bag">Bag</option>
+            <option value="Keys">Keys</option>
+            <option value="Wallet">Wallet</option>
+            <option value="Clothing">Clothing / Wearables</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label data-i18n="form_location">Campus Location</label>
+          <select id="locationFilter" class="form-control">
+            <option value="">All Locations</option>
+            <option value="Library">Library</option>
+            <option value="Canteen">Canteen</option>
+            <option value="Computer Lab">Computer Lab</option>
+            <option value="Main Block">Main Block</option>
+            <option value="Hostel">Hostel</option>
+            <option value="Sports Ground">Sports Ground</option>
+            <option value="Parking">Parking</option>
+            <option value="Auditorium">Auditorium</option>
+            <option value="Other / Unknown">Other / Unknown</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label data-i18n="status_label">Status</label>
+          <select id="statusFilter" class="form-control">
+            <option value="">All Statuses</option>
+            <option value="Open">Open</option>
+            <option value="Matched">Matched</option>
+            <option value="Claim Pending">Claim Pending</option>
+            <option value="Approved">Approved</option>
+            <option value="Returned">Returned</option>
+          </select>
+        </div>
+
+        <div style="display:flex; gap:0.5rem;">
+          <button type="submit" class="btn btn-primary" style="flex:1;" data-i18n="btn_apply_filters">Apply Filters</button>
+          <button type="button" class="btn btn-outline" onclick="resetFilters()" data-i18n="btn_reset">Reset</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Results Header -->
+    <div style="margin-bottom:1rem; display:flex; justify-content:space-between; align-items:center;">
+      <div id="resultsCount" style="font-size:0.9rem; font-weight:600; color:var(--text-muted);">
+        Showing results...
+      </div>
+    </div>
+
+    <!-- Items Grid Container -->
+    <div class="items-grid" id="searchResultsGrid">
+      <div style="grid-column:1/-1; text-align:center; padding:3rem; color:var(--text-muted);">
+        Loading items...
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/app.js"></script>
+  <script>
+    async function loadFilteredItems() {
+      const container = document.getElementById('searchResultsGrid');
+      const countEl = document.getElementById('resultsCount');
+
+      const search = document.getElementById('searchInput').value.trim();
+      const type = document.getElementById('typeFilter').value;
+      const category = document.getElementById('categoryFilter').value;
+      const location = document.getElementById('locationFilter').value;
+      const status = document.getElementById('statusFilter').value;
+
+      const params = new URLSearchParams();
+      if (search) params.append('search', search);
+      if (type) params.append('type', type);
+      if (category) params.append('category', category);
+      if (location) params.append('location', location);
+      if (status) params.append('status', status);
+
+      try {
+        const res = await fetch(`/api/items?${params.toString()}`);
+        const items = await res.json();
+
+        countEl.textContent = `Found ${items.length} item(s)`;
+
+        if (items.length === 0) {
+          container.innerHTML = `
+            <div style="grid-column:1/-1; text-align:center; padding:3.5rem; background:#fff; border-radius:12px; border:1px solid #e2e8f0;">
+              <h3>No matching items found</h3>
+              <p style="color:#64748b; margin-top:0.35rem;">Try adjusting your keyword or filter options.</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = items.map(item => `
+          <div class="item-card" onclick="openItemDetailsModal(${item.id})" style="cursor:pointer;">
+            <div class="item-thumb-wrapper">
+              <span class="item-type-badge ${item.type === 'lost' ? 'type-lost' : 'type-found'}">${item.type}</span>
+              <span class="item-status-pill status-${item.status.toLowerCase().replace(/\s+/g, '-')}">${escapeHtml(item.status)}</span>
+              <img src="${item.image_url || '/images/default-item.svg'}" alt="${escapeHtml(item.title)}" class="item-thumb" onerror="this.src='/images/default-item.svg'" />
+            </div>
+            <div class="item-card-body">
+              <div class="item-card-title">${escapeHtml(item.title)}</div>
+              <div class="item-meta-row">
+                <span class="meta-chip">🏷️ ${escapeHtml(item.category)}</span>
+                <span class="meta-chip">🎨 ${escapeHtml(item.color)}</span>
+                <span class="meta-chip">📍 ${escapeHtml(item.location)}</span>
+                <span class="meta-chip">📅 ${escapeHtml(item.date_lost_or_found)}</span>
+              </div>
+              <p class="item-desc">${escapeHtml(item.description)}</p>
+              
+              <div class="item-card-footer" onclick="event.stopPropagation()">
+                <span style="font-size:0.75rem; color:#64748b;">Reported by ${escapeHtml(item.reporter_name || 'Student')}</span>
+                <div style="display:flex; gap:0.4rem;">
+                  <button class="btn btn-sm btn-outline" onclick="openItemDetailsModal(${item.id})">Details</button>
+                  ${item.type === 'found' && item.status !== 'Returned' ? (
+                    currentUser && item.user_id === currentUser.id ? `
+                      <span style="font-size:0.75rem; color:#64748b; font-weight:600; padding:0.25rem 0.4rem;">Your Report</span>
+                    ` : `
+                      <button class="btn btn-sm btn-found" onclick="openClaimModal(${item.id}, '${escapeHtml(item.title).replace(/'/g, "\\'")}', ${item.user_id})">This is Mine</button>
+                    `
+                  ) : ''}
+                </div>
+              </div>
+            </div>
+          </div>
+        `).join('');
+        applyLanguage(currentLang);
+      } catch (err) {
+        container.innerHTML = `<div style="grid-column:1/-1; color:#ef4444; text-align:center;">Failed to load results.</div>`;
+      }
+    }
+
+    function handleSearch(e) {
+      e.preventDefault();
+      loadFilteredItems();
+    }
+
+    function resetFilters() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('typeFilter').value = '';
+      document.getElementById('categoryFilter').value = '';
+      document.getElementById('locationFilter').value = '';
+      document.getElementById('statusFilter').value = '';
+      loadFilteredItems();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const search = urlParams.get('search');
+      if (search) {
+        document.getElementById('searchInput').value = search;
+      }
+      loadFilteredItems();
+    });
+  </script>
+</body>
+</html>
+

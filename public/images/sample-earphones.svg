@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 240" width="100%" height="100%">
+  <defs>
+    <linearGradient id="epBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </linearGradient>
+    <linearGradient id="epHeadband" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="50%" stop-color="#334155"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="epCup" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="50%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+    <linearGradient id="epCushion" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#334155"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="epMetal" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#cbd5e1"/>
+      <stop offset="50%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#94a3b8"/>
+    </linearGradient>
+    <filter id="epShadow" x="-10%" y="-10%" width="120%" height="125%">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="300" height="240" rx="16" fill="url(#epBg)"/>
+  <circle cx="150" cy="120" r="95" fill="#ffffff" opacity="0.6"/>
+
+  <g filter="url(#epShadow)">
+    <!-- Headband Arc Outer -->
+    <path d="M 80,140 C 70,60 230,60 220,140" fill="none" stroke="url(#epHeadband)" stroke-width="16" stroke-linecap="round"/>
+    <!-- Headband Soft Padding Inner -->
+    <path d="M 95,115 C 90,75 210,75 205,115" fill="none" stroke="#475569" stroke-width="8" stroke-linecap="round"/>
+
+    <!-- Left Metal Slider -->
+    <rect x="74" y="125" width="8" height="25" rx="3" fill="url(#epMetal)"/>
+    <line x1="78" y1="130" x2="78" y2="145" stroke="#64748b" stroke-width="1.5"/>
+
+    <!-- Right Metal Slider -->
+    <rect x="218" y="125" width="8" height="25" rx="3" fill="url(#epMetal)"/>
+    <line x1="222" y1="130" x2="222" y2="145" stroke="#64748b" stroke-width="1.5"/>
+
+    <!-- Left Earcup Assembly -->
+    <!-- Swivel arm -->
+    <path d="M 72,145 C 65,150 65,165 72,175" fill="none" stroke="#334155" stroke-width="6"/>
+    <!-- Ear cushion (angled) -->
+    <ellipse cx="68" cy="162" rx="14" ry="28" fill="url(#epCushion)" stroke="#0f172a" stroke-width="2" transform="rotate(-8 68 162)"/>
+    <!-- Outer cup shell -->
+    <ellipse cx="80" cy="162" rx="16" ry="26" fill="url(#epCup)" stroke="#475569" stroke-width="1.5" transform="rotate(-8 80 162)"/>
+    <circle cx="80" cy="162" r="8" fill="#1e293b"/>
+    <circle cx="80" cy="162" r="3" fill="#3b82f6"/> <!-- Power LED -->
+
+    <!-- Right Earcup Assembly -->
+    <!-- Swivel arm -->
+    <path d="M 228,145 C 235,150 235,165 228,175" fill="none" stroke="#334155" stroke-width="6"/>
+    <!-- Ear cushion (angled) -->
+    <ellipse cx="232" cy="162" rx="14" ry="28" fill="url(#epCushion)" stroke="#0f172a" stroke-width="2" transform="rotate(8 232 162)"/>
+    <!-- Outer cup shell -->
+    <ellipse cx="220" cy="162" rx="16" ry="26" fill="url(#epCup)" stroke="#475569" stroke-width="1.5" transform="rotate(8 220 162)"/>
+    <circle cx="220" cy="162" r="8" fill="#1e293b"/>
+    <circle cx="220" cy="162" r="3" fill="#10b981"/> <!-- Status LED -->
+  </g>
+
+  <!-- Bluetooth / Sound waves indicator -->
+  <path d="M 140,40 Q 150,30 160,40" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M 132,32 Q 150,20 168,32" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+
+  <!-- Badge label -->
+  <rect x="100" y="200" width="100" height="24" rx="12" fill="#0f172a" opacity="0.85"/>
+  <text x="150" y="216" text-anchor="middle" fill="#ffffff" font-family="system-ui, sans-serif" font-size="11" font-weight="700" letter-spacing="0.5">EARPHONES</text>
+</svg>

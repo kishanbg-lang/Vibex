@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Reports &amp; Claims – FINDIT</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <main class="main-content">
+    <div class="section-header">
+      <div>
+        <h1 class="section-title" data-i18n="nav_my_reports">My Reports &amp; Claims</h1>
+        <p style="font-size:0.88rem; color:var(--text-muted);" data-i18n="my_reports_sub">
+          Manage your reported items, check claim statuses, and access your Recovery QR Codes.
+        </p>
+      </div>
+      <div>
+        <a href="/report-lost.html" class="btn btn-sm btn-lost" data-i18n="btn_report_lost">+ Report Lost</a>
+        <a href="/report-found.html" class="btn btn-sm btn-found" data-i18n="btn_report_found">+ Report Found</a>
+      </div>
+    </div>
+
+    <!-- Tab navigation -->
+    <div class="tab-nav-bar">
+      <button class="tab-btn active" id="tabLostBtn" onclick="switchMyTab('lost')">
+        📋 Lost Reports (<span id="countLost">0</span>)
+      </button>
+      <button class="tab-btn" id="tabFoundBtn" onclick="switchMyTab('found')">
+        📦 Found Reports (<span id="countFound">0</span>)
+      </button>
+      <button class="tab-btn" id="tabClaimsBtn" onclick="switchMyTab('claims')">
+        📱 My Claims &amp; QR Codes (<span id="countClaims">0</span>)
+      </button>
+    </div>
+
+    <!-- Section 1: Lost Items -->
+    <div id="sectionMyLost" class="items-grid">
+      <div style="grid-column:1/-1; text-align:center; padding:2.5rem; color:var(--text-muted);">
+        Loading your lost items...
+      </div>
+    </div>
+
+    <!-- Section 2: Found Items -->
+    <div id="sectionMyFound" class="items-grid" style="display:none;">
+      <div style="grid-column:1/-1; text-align:center; padding:2.5rem; color:var(--text-muted);">
+        Loading your found items...
+      </div>
+    </div>
+
+    <!-- Section 3: My Claims & QR Codes -->
+    <div id="sectionMyClaims" style="display:none;">
+      <div id="claimsListContainer">
+        <div style="text-align:center; padding:2.5rem; color:var(--text-muted);">
+          Loading your claims...
+        </div>
+      </div>
+    </div>
+
+    <!-- QR Code Display Modal -->
+    <div class="modal-overlay" id="qrModal">
+      <div class="modal-window" style="text-align:center;">
+        <div class="modal-header">
+          <h3 id="qrModalTitle" style="font-size:1.15rem;">Campus Recovery QR Code</h3>
+          <button class="modal-close-btn" onclick="closeQrModal()">&times;</button>
+        </div>
+        <div style="padding:1rem 0;">
+          <img id="qrModalImage" style="width:240px; height:240px; border-radius:12px; border:2px solid #e2e8f0; margin-bottom:1rem;" alt="QR Code" />
+          <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:0.75rem; margin-bottom:1rem;">
+            <div style="font-size:0.8rem; color:#1e40af; font-weight:600;">CLAIM CODE</div>
+            <div id="qrModalCode" style="font-size:1.4rem; font-weight:800; letter-spacing:1px; color:var(--primary-dark);">FND-XXXX</div>
+          </div>
+          <p style="font-size:0.85rem; color:var(--text-muted);">
+            Show this QR code or claim code at the <strong>Campus Security Desk</strong> to collect your item.
+          </p>
+        </div>
+        <button class="btn btn-primary" onclick="closeQrModal()" style="width:100%;">Close</button>
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/app.js"></script>
+  <script>
+    let myLostItems = [];
+    let myFoundItems = [];
+    let myClaims = [];
+    let currentMyTab = 'lost';
+
+    async function loadMyData() {
+      if (!currentUser) {
+        showToast('Please log in to view your reports', 'error');
+        setTimeout(() => { window.location.href = '/login.html'; }, 1000);
+        return;
+      }
+
+      try {
+        const [lostRes, foundRes, claimsRes] = await Promise.all([
+          fetch(`/api/items?user_id=${currentUser.id}&type=lost`),
+          fetch(`/api/items?user_id=${currentUser.id}&type=found`),
+          fetch('/api/claims')
+        ]);
+
+        myLostItems = await lostRes.json();
+        myFoundItems = await foundRes.json();
+        myClaims = await claimsRes.json();
+
+        document.getElementById('countLost').textContent = myLostItems.length;
+        document.getElementById('countFound').textContent = myFoundItems.length;
+        document.getElementById('countClaims').textContent = myClaims.length;
+
+        renderLost();
+        renderFound();
+        renderClaims();
+
+        // Check if hash is #claims
+        if (window.location.hash === '#claims') {
+          switchMyTab('claims');
+        }
+      } catch (e) {
+        console.error('Error loading reports', e);
+      }
+    }
+
+    function switchMyTab(tab) {
+      currentMyTab = tab;
+      const sLost = document.getElementById('sectionMyLost');
+      const sFound = document.getElementById('sectionMyFound');
+      const sClaims = document.getElementById('sectionMyClaims');
+
+      const bLost = document.getElementById('tabLostBtn');
+      const bFound = document.getElementById('tabFoundBtn');
+      const bClaims = document.getElementById('tabClaimsBtn');
+
+      [sLost, sFound, sClaims].forEach(s => s.style.display = 'none');
+      [bLost, bFound, bClaims].forEach(b => b.classList.remove('active'));
+
+      if (tab === 'lost') {
+        sLost.style.display = 'grid';
+        bLost.classList.add('active');
+      } else if (tab === 'found') {
+        sFound.style.display = 'grid';
+        bFound.classList.add('active');
+      } else {
+        sClaims.style.display = 'block';
+        bClaims.classList.add('active');
+      }
+    }
+
+    function renderLost() {
+      const container = document.getElementById('sectionMyLost');
+      if (myLostItems.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column:1/-1; text-align:center; padding:3rem; background:#fff; border-radius:12px; border:1px solid #e2e8f0;">
+            <h3>No lost items reported yet</h3>
+            <p style="color:#64748b; margin-top:0.4rem;">Have you misplaced something? File a report now.</p>
+            <a href="/report-lost.html" class="btn btn-lost" style="margin-top:1rem;">Report Lost Item</a>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = myLostItems.map(item => `
+        <div class="item-card" onclick="openItemDetailsModal(${item.id})" style="cursor:pointer;">
+          <div class="item-thumb-wrapper">
+            <span class="item-type-badge type-lost">${item.type}</span>
+            <span class="item-status-pill status-${item.status.toLowerCase().replace(/\s+/g, '-')}">${escapeHtml(item.status)}</span>
+            <img src="${item.image_url || '/images/default-item.svg'}" alt="${escapeHtml(item.title)}" class="item-thumb" onerror="this.src='/images/default-item.svg'" />
+          </div>
+          <div class="item-card-body">
+            <div class="item-card-title">${escapeHtml(item.title)}</div>
+            <div class="item-meta-row">
+              <span class="meta-chip">🏷️ ${escapeHtml(item.category)}</span>
+              <span class="meta-chip">📍 ${escapeHtml(item.location)}</span>
+              <span class="meta-chip">📅 ${escapeHtml(item.date_lost_or_found)}</span>
+            </div>
+            <p class="item-desc">${escapeHtml(item.description)}</p>
+            <div class="item-card-footer" onclick="event.stopPropagation()">
+              <div style="display:flex; gap:0.4rem;">
+                <button class="btn btn-sm btn-outline" onclick="openItemDetailsModal(${item.id})">Details</button>
+                <a href="/smart-match.html" class="btn btn-sm btn-outline">Check Matches</a>
+              </div>
+              <button class="btn btn-sm btn-outline" style="color:#dc2626;" onclick="deleteReport(${item.id})">Delete</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+      applyLanguage(currentLang);
+    }
+
+    function renderFound() {
+      const container = document.getElementById('sectionMyFound');
+      if (myFoundItems.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column:1/-1; text-align:center; padding:3rem; background:#fff; border-radius:12px; border:1px solid #e2e8f0;">
+            <h3>No found items reported</h3>
+            <p style="color:#64748b; margin-top:0.4rem;">Picked up something on campus? Help return it.</p>
+            <a href="/report-found.html" class="btn btn-found" style="margin-top:1rem;">Report Found Item</a>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = myFoundItems.map(item => `
+        <div class="item-card" onclick="openItemDetailsModal(${item.id})" style="cursor:pointer;">
+          <div class="item-thumb-wrapper">
+            <span class="item-type-badge type-found">${item.type}</span>
+            <span class="item-status-pill status-${item.status.toLowerCase().replace(/\s+/g, '-')}">${escapeHtml(item.status)}</span>
+            <img src="${item.image_url || '/images/default-item.svg'}" alt="${escapeHtml(item.title)}" class="item-thumb" onerror="this.src='/images/default-item.svg'" />
+          </div>
+          <div class="item-card-body">
+            <div class="item-card-title">${escapeHtml(item.title)}</div>
+            <div class="item-meta-row">
+              <span class="meta-chip">🏷️ ${escapeHtml(item.category)}</span>
+              <span class="meta-chip">📍 ${escapeHtml(item.location)}</span>
+              <span class="meta-chip">📍 Now: ${escapeHtml(item.current_location_desc || 'with me')}</span>
+            </div>
+            <p class="item-desc">${escapeHtml(item.description)}</p>
+            
+            ${item.private_detail ? `
+              <div style="background:#fffbeb; border:1px solid #fde68a; border-radius:6px; padding:0.4rem 0.6rem; font-size:0.78rem; margin-bottom:0.75rem;">
+                <strong>🔒 Your Secret Detail:</strong> ${escapeHtml(item.private_detail)}
+              </div>
+            ` : ''}
+
+            <div class="item-card-footer" onclick="event.stopPropagation()">
+              <div style="display:flex; gap:0.4rem; align-items:center;">
+                <span class="role-badge" style="background:#e0f2fe; color:#0369a1;">${escapeHtml(item.status)}</span>
+                <button class="btn btn-sm btn-outline" onclick="openItemDetailsModal(${item.id})">Details</button>
+              </div>
+              <button class="btn btn-sm btn-outline" style="color:#dc2626;" onclick="deleteReport(${item.id})">Delete</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+      applyLanguage(currentLang);
+    }
+
+    function renderClaims() {
+      const container = document.getElementById('claimsListContainer');
+      if (myClaims.length === 0) {
+        container.innerHTML = `
+          <div style="text-align:center; padding:3.5rem; background:#fff; border-radius:12px; border:1px solid #e2e8f0;">
+            <h3>No claims submitted yet</h3>
+            <p style="color:#64748b; margin-top:0.4rem;">
+              When you find your missing item in the Found listings, click <strong>"This is Mine"</strong> to submit a claim.
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = `
+        <div style="display:flex; flex-direction:column; gap:1rem;">
+          ${myClaims.map(c => `
+            <div class="stat-card" style="padding:1.25rem;">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.75rem;">
+                <div>
+                  <h3 style="font-size:1.1rem; margin-bottom:0.25rem;">${escapeHtml(c.item_title)}</h3>
+                  <div style="font-size:0.8rem; color:#64748b;">
+                    Claim Code: <strong>${escapeHtml(c.claim_code)}</strong> | Location: ${escapeHtml(c.item_location)}
+                  </div>
+                </div>
+                <div>
+                  <span class="match-badge ${c.status === 'Approved' ? 'match-high' : (c.status === 'Pending' ? 'match-medium' : 'match-low')}">
+                    Claim Status: ${escapeHtml(c.status)}
+                  </span>
+                </div>
+              </div>
+
+              <div style="background:#f8fafc; border-radius:8px; padding:0.75rem; font-size:0.85rem; margin-bottom:0.75rem;">
+                <div><strong>Your Verification Answer:</strong> ${escapeHtml(c.verification_answer)}</div>
+                ${c.message ? `<div style="margin-top:0.25rem; color:#64748b;"><strong>Note:</strong> ${escapeHtml(c.message)}</div>` : ''}
+              </div>
+
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+                <div style="font-size:0.8rem; color:#94a3b8;">Claim filed on ${new Date(c.created_at).toLocaleDateString()}</div>
+                <div>
+                  ${c.status === 'Approved' && c.qr_code ? `
+                    <button class="btn btn-sm btn-primary" onclick="showQrModal('${c.qr_code}', '${c.claim_code}', '${escapeHtml(c.item_title).replace(/'/g, "\\'")}')">
+                      📱 View Recovery QR Code
+                    </button>
+                  ` : ''}
+                  ${c.status === 'Pending' ? `
+                    <span style="font-size:0.85rem; color:#f59e0b; font-weight:600;">⏳ Awaiting Finder / Admin Approval</span>
+                  ` : ''}
+                  ${c.status === 'Returned' ? `
+                    <span style="font-size:0.85rem; color:#059669; font-weight:700;">✅ Recovered &amp; Returned!</span>
+                  ` : ''}
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+      applyLanguage(currentLang);
+    }
+
+    function showQrModal(qrDataUrl, code, title) {
+      document.getElementById('qrModalImage').src = qrDataUrl;
+      document.getElementById('qrModalCode').textContent = code;
+      document.getElementById('qrModalTitle').textContent = `Recovery Pass: ${title}`;
+      document.getElementById('qrModal').classList.add('active');
+    }
+
+    function closeQrModal() {
+      document.getElementById('qrModal').classList.remove('active');
+    }
+
+    async function deleteReport(id) {
+      if (!confirm('Are you sure you want to delete this report?')) return;
+      try {
+        const res = await fetch(`/api/items/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+          showToast('Report deleted', 'info');
+          loadMyData();
+        } else {
+          showToast('Failed to delete report', 'error');
+        }
+      } catch (e) {
+        showToast('Error deleting report', 'error');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check auth and load
+      setTimeout(loadMyData, 300);
+    });
+  </script>
+</body>
+</html>
+

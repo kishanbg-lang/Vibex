@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 240" width="100%" height="100%">
+  <defs>
+    <linearGradient id="mBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </linearGradient>
+    <linearGradient id="mouseBody" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#475569"/>
+      <stop offset="50%" stop-color="#334155"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="mouseAccent" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+    <filter id="mShadow" x="-10%" y="-10%" width="120%" height="125%">
+      <feDropShadow dx="2" dy="8" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <rect width="300" height="240" rx="16" fill="url(#mBg)"/>
+  <circle cx="150" cy="120" r="88" fill="#e0e7ff" opacity="0.5"/>
+
+  <g filter="url(#mShadow)">
+    <!-- Main Mouse Ergonomic Oval Shell -->
+    <path d="M 120,50 C 135,38 165,38 180,50 C 196,65 198,160 178,190 C 165,202 135,202 122,190 C 102,160 104,65 120,50 Z" fill="url(#mouseBody)" stroke="#64748b" stroke-width="2"/>
+
+    <!-- Left & Right Clicker Split seam -->
+    <path d="M 150,42 L 150,105" stroke="#1e293b" stroke-width="2.5"/>
+    <path d="M 115,105 Q 150,118 185,105" fill="none" stroke="#1e293b" stroke-width="2"/>
+
+    <!-- Rubber Textured Scroll Wheel -->
+    <rect x="144" y="58" width="12" height="28" rx="5" fill="#0f172a" stroke="#64748b" stroke-width="1.5"/>
+    <line x1="144" y1="65" x2="156" y2="65" stroke="#94a3b8" stroke-width="1.5"/>
+    <line x1="144" y1="72" x2="156" y2="72" stroke="#94a3b8" stroke-width="1.5"/>
+    <line x1="144" y1="79" x2="156" y2="79" stroke="#94a3b8" stroke-width="1.5"/>
+
+    <!-- DPI Toggle Button / Status LED -->
+    <circle cx="150" cy="95" r="3" fill="url(#mouseAccent)"/>
+
+    <!-- Palm Rest Grip Contour -->
+    <ellipse cx="150" cy="155" rx="25" ry="18" fill="none" stroke="#475569" stroke-width="1.2" opacity="0.6"/>
+    <!-- Tech Logo on Palm Rest -->
+    <circle cx="150" cy="155" r="7" fill="#2563eb" opacity="0.8"/>
+    <text x="150" y="157.5" fill="#ffffff" font-family="system-ui" font-size="6" font-weight="900" text-anchor="middle">G</text>
+
+    <!-- Separate USB Nano Dongle Receiver (Bottom Right) -->
+    <g transform="translate(205, 140)">
+      <!-- Gold USB Contacts -->
+      <rect x="0" y="0" width="16" height="14" rx="2" fill="#eab308" stroke="#ca8a04" stroke-width="1"/>
+      <rect x="3" y="3" width="3" height="4" fill="#a16207"/>
+      <rect x="10" y="3" width="3" height="4" fill="#a16207"/>
+      <!-- Plastic Base -->
+      <rect x="-3" y="14" width="22" height="12" rx="3" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+      <circle cx="8" cy="20" r="2" fill="#3b82f6"/>
+    </g>
+  </g>
+</svg>

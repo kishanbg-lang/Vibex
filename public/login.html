@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login &amp; Register – FINDIT</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <main class="main-content" style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:80vh;">
+    
+    <div class="form-card" style="width:100%; max-width:440px;">
+      
+      <!-- Demo One-Click Fill -->
+      <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:0.75rem; margin-bottom:1.5rem; text-align:center;">
+        <div style="font-size:0.8rem; font-weight:700; color:#1e40af; margin-bottom:0.4rem;">🚀 HACKATHON DEMO SHORTCUTS</div>
+        <div style="display:flex; gap:0.4rem; justify-content:center; flex-wrap:wrap;">
+          <button type="button" class="btn btn-sm btn-outline" onclick="fillDemo('student1@college.edu', 'student123')" style="font-size:0.75rem; background:#fff;">
+            👤 Student 1
+          </button>
+          <button type="button" class="btn btn-sm btn-outline" onclick="fillDemo('student2@college.edu', 'student123')" style="font-size:0.75rem; background:#fff;">
+            👤 Student 2
+          </button>
+          <button type="button" class="btn btn-sm btn-outline" onclick="fillDemo('student3@college.edu', 'student123')" style="font-size:0.75rem; background:#fff;">
+            👤 Student 3
+          </button>
+          <button type="button" class="btn btn-sm btn-outline" onclick="fillDemo('admin@college.edu', 'admin123')" style="font-size:0.75rem; background:#fff; border-color:#f59e0b; color:#b45309;">
+            🛡️ Admin
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab Buttons -->
+      <div class="tab-nav-bar" style="margin-bottom:1.25rem;">
+        <button id="tabLoginBtn" class="tab-btn active" onclick="switchTab('login')" style="flex:1; justify-content:center;">
+          Sign In
+        </button>
+        <button id="tabRegisterBtn" class="tab-btn" onclick="switchTab('register')" style="flex:1; justify-content:center;">
+          Register
+        </button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group" style="margin-bottom:1rem;">
+          <label>Campus Email</label>
+          <input type="email" id="loginEmail" class="form-control" placeholder="name@college.edu" required />
+        </div>
+        <div class="form-group" style="margin-bottom:1.25rem;">
+          <label>Password</label>
+          <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required />
+        </div>
+        <button type="submit" class="btn btn-primary" id="loginSubmitBtn" style="width:100%;">
+          Sign In
+        </button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="registerForm" onsubmit="handleRegister(event)" style="display:none;">
+        <div class="form-group" style="margin-bottom:0.75rem;">
+          <label>Full Name</label>
+          <input type="text" id="regName" class="form-control" placeholder="e.g. Alex Student" required />
+        </div>
+        <div class="form-group" style="margin-bottom:0.75rem;">
+          <label>Campus Email</label>
+          <input type="email" id="regEmail" class="form-control" placeholder="student@college.edu" required />
+        </div>
+        <div class="form-group" style="margin-bottom:0.75rem;">
+          <label>Phone Number (optional)</label>
+          <input type="tel" id="regPhone" class="form-control" placeholder="+91 9876543210" />
+        </div>
+        <div class="form-group" style="margin-bottom:0.75rem;">
+          <label>Role</label>
+          <select id="regRole" class="form-control">
+            <option value="student">Student</option>
+            <option value="admin">College Staff / Security Admin</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:1.25rem;">
+          <label>Create Password</label>
+          <input type="password" id="regPassword" class="form-control" placeholder="Minimum 6 characters" required />
+        </div>
+        <button type="submit" class="btn btn-primary" id="regSubmitBtn" style="width:100%;">
+          Create Account
+        </button>
+      </form>
+
+    </div>
+
+  </main>
+
+  <script src="/js/app.js"></script>
+  <script>
+    function switchTab(tab) {
+      const loginForm = document.getElementById('loginForm');
+      const registerForm = document.getElementById('registerForm');
+      const tabLoginBtn = document.getElementById('tabLoginBtn');
+      const tabRegisterBtn = document.getElementById('tabRegisterBtn');
+
+      if (tab === 'login') {
+        loginForm.style.display = 'block';
+        registerForm.style.display = 'none';
+        tabLoginBtn.classList.add('active');
+        tabRegisterBtn.classList.remove('active');
+      } else {
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'block';
+        tabRegisterBtn.classList.add('active');
+        tabLoginBtn.classList.remove('active');
+      }
+      applyLanguage(currentLang);
+    }
+
+    function fillDemo(email, password) {
+      switchTab('login');
+      document.getElementById('loginEmail').value = email;
+      document.getElementById('loginPassword').value = password;
+      showToast(`Filled credentials for ${email}`, 'info');
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+      const btn = document.getElementById('loginSubmitBtn');
+
+      btn.disabled = true;
+      btn.textContent = 'Signing in...';
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        btn.disabled = false;
+        btn.textContent = 'Sign In';
+
+        if (res.ok && data.success) {
+          showToast(`Welcome back, ${data.user.name}!`, 'success');
+          setTimeout(() => {
+            if (data.user.role === 'admin') {
+              window.location.href = '/admin.html';
+            } else {
+              window.location.href = '/index.html';
+            }
+          }, 800);
+        } else {
+          showToast(data.error || 'Login failed', 'error');
+        }
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = 'Sign In';
+        showToast('Network error during login', 'error');
+      }
+    }
+
+    async function handleRegister(e) {
+      e.preventDefault();
+      const name = document.getElementById('regName').value;
+      const email = document.getElementById('regEmail').value;
+      const phone = document.getElementById('regPhone').value;
+      const role = document.getElementById('regRole').value;
+      const password = document.getElementById('regPassword').value;
+      const btn = document.getElementById('regSubmitBtn');
+
+      btn.disabled = true;
+      btn.textContent = 'Creating account...';
+
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, phone, role, password })
+        });
+        const data = await res.json();
+        btn.disabled = false;
+        btn.textContent = 'Create Account';
+
+        if (res.ok && data.success) {
+          showToast(`Account created! Welcome, ${data.user.name}!`, 'success');
+          setTimeout(() => {
+            window.location.href = '/index.html';
+          }, 800);
+        } else {
+          showToast(data.error || 'Registration failed', 'error');
+        }
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = 'Create Account';
+        showToast('Network error during registration', 'error');
+      }
+    }
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 240" width="100%" height="100%">
+  <defs>
+    <linearGradient id="defBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </linearGradient>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="50%" stop-color="#1d4ed8"/>
+      <stop offset="100%" stop-color="#1e3a8a"/>
+    </linearGradient>
+    <filter id="defShadow" x="-10%" y="-10%" width="120%" height="125%">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#1e40af" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <rect width="300" height="240" rx="16" fill="url(#defBg)"/>
+  <circle cx="150" cy="115" r="85" fill="#eff6ff"/>
+
+  <!-- Radar Scan Circles -->
+  <circle cx="150" cy="115" r="70" fill="none" stroke="#93c5fd" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.8"/>
+  <circle cx="150" cy="115" r="48" fill="none" stroke="#60a5fa" stroke-width="1.5" opacity="0.6"/>
+
+  <g filter="url(#defShadow)">
+    <!-- Security / Campus Recovery Shield -->
+    <path d="M 150,45 L 195,65 C 195,115 150,155 150,165 C 150,155 105,115 105,65 Z" fill="url(#shieldGrad)" stroke="#60a5fa" stroke-width="2.5"/>
+
+    <!-- Magnifying Glass Search Symbol inside Shield -->
+    <circle cx="145" cy="95" r="18" fill="none" stroke="#ffffff" stroke-width="4.5"/>
+    <line x1="158" y1="108" x2="172" y2="122" stroke="#ffffff" stroke-width="5.5" stroke-linecap="round"/>
+    <circle cx="145" cy="95" r="6" fill="#facc15"/>
+  </g>
+
+  <!-- Tag Pill -->
+  <rect x="90" y="195" width="120" height="24" rx="12" fill="#1e3a8a"/>
+  <text x="150" y="211" text-anchor="middle" fill="#ffffff" font-family="system-ui, sans-serif" font-size="11" font-weight="800" letter-spacing="0.5">CAMPUS ITEM</text>
+</svg>

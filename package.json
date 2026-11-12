@@ -1,0 +1,19 @@
+{
+  "name": "findit-smart-campus-recovery",
+  "version": "1.0.0",
+  "description": "FINDIT – Smart Campus Recovery System: Lost Something? Find It Smarter.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node seed.js",
+    "test": "node test/verify-all.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "multer": "^1.4.5-lts.1",
+    "qrcode": "^1.5.3",
+    "sql.js": "^1.12.0"
+  }
+}

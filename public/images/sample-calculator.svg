@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 240" width="100%" height="100%">
+  <defs>
+    <linearGradient id="calcBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </linearGradient>
+    <linearGradient id="calcBody" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="50%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+    <linearGradient id="calcLcd" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#94a3b8"/>
+      <stop offset="15%" stop-color="#cbd5e1"/>
+      <stop offset="100%" stop-color="#94a3b8"/>
+    </linearGradient>
+    <linearGradient id="solarCell" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#312e81"/>
+      <stop offset="50%" stop-color="#4338ca"/>
+      <stop offset="100%" stop-color="#1e1b4b"/>
+    </linearGradient>
+    <filter id="calcShadow" x="-10%" y="-10%" width="120%" height="125%">
+      <feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <rect width="300" height="240" rx="16" fill="url(#calcBg)"/>
+
+  <!-- Calculator Unit -->
+  <g filter="url(#calcShadow)">
+    <!-- Main Shell -->
+    <rect x="90" y="15" width="120" height="205" rx="14" fill="url(#calcBody)" stroke="#334155" stroke-width="2"/>
+    
+    <!-- Top Branding & Solar Cell -->
+    <text x="105" y="32" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="7" font-weight="800" letter-spacing="0.5">CASIO</text>
+    <text x="105" y="40" fill="#64748b" font-family="monospace" font-size="5">fx-991EX</text>
+    <rect x="162" y="25" width="36" height="12" rx="2" fill="url(#solarCell)" stroke="#1e1b4b" stroke-width="0.5"/>
+    <line x1="174" y1="25" x2="174" y2="37" stroke="#6366f1" stroke-width="0.5"/>
+    <line x1="186" y1="25" x2="186" y2="37" stroke="#6366f1" stroke-width="0.5"/>
+
+    <!-- LCD Display Screen -->
+    <rect x="100" y="46" width="100" height="38" rx="4" fill="url(#calcLcd)" stroke="#475569" stroke-width="1.5"/>
+    <rect x="102" y="48" width="96" height="34" rx="2" fill="#e2e8f0"/>
+    <!-- Mathematical formula on LCD -->
+    <text x="106" y="59" fill="#334155" font-family="monospace" font-size="7.5" font-weight="600">f(x)=2x²+3x-5</text>
+    <text x="194" y="76" text-anchor="end" fill="#0f172a" font-family="monospace" font-size="12" font-weight="800">14.738</text>
+    <text x="106" y="76" fill="#64748b" font-family="system-ui" font-size="5" font-weight="700">D  MATH</text>
+
+    <!-- Function Keys Section (Replay & Setup) -->
+    <!-- Shift / Alpha -->
+    <circle cx="106" cy="94" r="4.5" fill="#ca8a04"/>
+    <circle cx="118" cy="94" r="4.5" fill="#dc2626"/>
+    <!-- Menu / On -->
+    <circle cx="182" cy="94" r="4.5" fill="#475569"/>
+    <circle cx="194" cy="94" r="4.5" fill="#2563eb"/>
+    <!-- Replay Oval Pad -->
+    <ellipse cx="150" cy="98" rx="14" ry="9" fill="#334155" stroke="#64748b" stroke-width="1"/>
+    <circle cx="150" cy="98" r="3" fill="#1e293b"/>
+
+    <!-- Scientific Function Rows -->
+    <g fill="#334155">
+      <rect x="102" y="112" width="13" height="7" rx="2"/><rect x="119" y="112" width="13" height="7" rx="2"/><rect x="136" y="112" width="13" height="7" rx="2"/><rect x="153" y="112" width="13" height="7" rx="2"/><rect x="170" y="112" width="13" height="7" rx="2"/><rect x="187" y="112" width="13" height="7" rx="2"/>
+      <rect x="102" y="122" width="13" height="7" rx="2"/><rect x="119" y="122" width="13" height="7" rx="2"/><rect x="136" y="122" width="13" height="7" rx="2"/><rect x="153" y="122" width="13" height="7" rx="2"/><rect x="170" y="122" width="13" height="7" rx="2"/><rect x="187" y="122" width="13" height="7" rx="2"/>
+      <rect x="102" y="132" width="13" height="7" rx="2"/><rect x="119" y="132" width="13" height="7" rx="2"/><rect x="136" y="132" width="13" height="7" rx="2"/><rect x="153" y="132" width="13" height="7" rx="2"/><rect x="170" y="132" width="13" height="7" rx="2"/><rect x="187" y="132" width="13" height="7" rx="2"/>
+    </g>
+
+    <!-- Number Pad Buttons -->
+    <g fill="#cbd5e1">
+      <rect x="102" y="145" width="16" height="11" rx="2"/><text x="110" y="153" text-anchor="middle" fill="#0f172a" font-size="7" font-weight="700">7</text>
+      <rect x="122" y="145" width="16" height="11" rx="2"/><text x="130" y="153" text-anchor="middle" fill="#0f172a" font-size="7" font-weight="700">8</text>
+      <rect x="142" y="145" width="16" height="11" rx="2"/><text x="150" y="153" text-anchor="middle" fill="#0f172a" font-size="7" font-weight="700">9</text>
+      <rect x="162" y="145" width="16" height="11" rx="2" fill="#ef4444"/><text x="170" y="153" text-anchor="middle" fill="#fff" font-size="6" font-weight="700">DEL</text>
+      <rect x="182" y="145" width="16" height="11" rx="2" fill="#ef4444"/><text x="190" y="153" text-anchor="middle" fill="#fff" font-size="6" font-weight="700">AC</text>
+
+      <rect x="102" y="160" width="16" height="11" rx="2"/><text x="110" y="168" text-anchor="middle" fill="#0f172a" font-size="7" font-weight="700">4</text>
+      <rect x="122" y="160" width="16" height="11" rx="2"/><text x="130" y="168" text-anchor="middle" fill="#0f172a" font-size="7" font-weight="700">5</text>
+      <rect x="142" y="160" width="16" height="11" rx="2"/><text x="150" y="168" text-anchor="middle" fill="#0f172a" font-size="7" font-weight="700">6</text>
+      <rect x="162" y="160" width="16" height="11" rx="2" fill="#475569"/><text x="170" y="168" text-anchor="middle" fill="#fff" font-size="7" font-weight="700">×</text>
+      <rect x="182" y="160" width="16" height="11" rx="2" fill="#475569"/><text x="190" y="168" text-anchor="middle" fill="#fff" font-size="7" font-weight="700">÷</text>
+
+      <rect x="102" y="175" width="16" height="11" rx="2"/><text x="110" y="183" text-anchor="middle" fill="#0f172a" font-size="7" font-weight="700">1</text>
+      <rect x="122" y="175" width="16" height="11" rx="2"/><text x="130" y="183" text-anchor="middle" fill="#0f172a" font-size="7" font-weight="700">2</text>
+      <rect x="142" y="175" width="16" height="11" rx="2"/><text x="150" y="183" text-anchor="middle" fill="#0f172a" font-size="7" font-weight="700">3</text>
+      <rect x="162" y="175" width="16" height="11" rx="2" fill="#475569"/><text x="170" y="183" text-anchor="middle" fill="#fff" font-size="7" font-weight="700">+</text>
+      <rect x="182" y="175" width="16" height="11" rx="2" fill="#475569"/><text x="190" y="183" text-anchor="middle" fill="#fff" font-size="7" font-weight="700">-</text>
+
+      <rect x="102" y="190" width="16" height="11" rx="2"/><text x="110" y="198" text-anchor="middle" fill="#0f172a" font-size="7" font-weight="700">0</text>
+      <rect x="122" y="190" width="16" height="11" rx="2"/><text x="130" y="198" text-anchor="middle" fill="#0f172a" font-size="7" font-weight="700">.</text>
+      <rect x="142" y="190" width="16" height="11" rx="2"/><text x="150" y="198" text-anchor="middle" fill="#0f172a" font-size="5" font-weight="700">×10ⁿ</text>
+      <rect x="162" y="190" width="16" height="11" rx="2" fill="#475569"/><text x="170" y="198" text-anchor="middle" fill="#fff" font-size="5" font-weight="700">Ans</text>
+      <rect x="182" y="190" width="16" height="11" rx="2" fill="#2563eb"/><text x="190" y="198" text-anchor="middle" fill="#fff" font-size="8" font-weight="700">=</text>
+    </g>
+  </g>
+</svg>

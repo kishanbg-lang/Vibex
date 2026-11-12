@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Report Lost Item – FINDIT</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <main class="main-content">
+    <div class="form-card">
+      <div class="form-header">
+        <span class="item-type-badge type-lost" style="position:static; display:inline-block; margin-bottom:0.5rem;" data-i18n="nav_lost">Report Lost</span>
+        <h2 data-i18n="report_lost_heading">Report a Lost Item</h2>
+        <p style="font-size:0.88rem; color:var(--text-muted); margin-top:0.25rem;" data-i18n="report_lost_sub">
+          Provide details so our AI Smart Matcher can automatically cross-reference found reports on campus.
+        </p>
+      </div>
+
+      <form id="lostForm" onsubmit="submitLostForm(event)" enctype="multipart/form-data">
+        <input type="hidden" name="type" value="lost" />
+
+        <div class="form-group" style="margin-bottom:1rem;">
+          <label data-i18n="form_item_name">Item Name *</label>
+          <input type="text" name="title" id="lostTitle" class="form-control" placeholder="e.g. Black Sony WH-1000XM4 Earphones" required />
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
+          <div class="form-group">
+            <label data-i18n="form_category">Category *</label>
+            <select name="category" id="lostCategory" class="form-control" required>
+              <option value="">Select Category</option>
+              <option value="ID Card">ID Card / College Smart Card</option>
+              <option value="Earphones">Earphones / Headphones / AirPods</option>
+              <option value="Electronic Devices">Electronic Devices (Laptop, Tablet, Charger, Smartwatch)</option>
+              <option value="Calculator">Calculator (Scientific / Basic)</option>
+              <option value="Stationery">Stationery Items (Books, Notes, Geometry Box, Pen)</option>
+              <option value="Bottle">Bottle / Sipper / Flask</option>
+              <option value="Bag">Bag / Backpack / Pouch</option>
+              <option value="Keys">Keys (Hostel / Room / Vehicle)</option>
+              <option value="Wallet">Wallet / Cardholder / Purse</option>
+              <option value="Clothing">Clothing / Wearables (Jacket, Umbrella, Spectacles)</option>
+              <option value="Other">Other Items</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label data-i18n="form_color">Primary Color *</label>
+            <input type="text" name="color" id="lostColor" class="form-control" placeholder="e.g. Black, Blue, Silver" required />
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
+          <div class="form-group">
+            <label data-i18n="form_location">Last Seen Campus Location *</label>
+            <select name="location" id="lostLocation" class="form-control" required>
+              <option value="">Select Location</option>
+              <option value="Library">Library</option>
+              <option value="Canteen">Canteen</option>
+              <option value="Computer Lab">Computer Lab</option>
+              <option value="Main Block">Main Block</option>
+              <option value="Hostel">Hostel</option>
+              <option value="Sports Ground">Sports Ground</option>
+              <option value="Parking">Parking</option>
+              <option value="Auditorium">Auditorium</option>
+              <option value="Other / Unknown">Other / Unknown (Not Sure Where Lost)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label data-i18n="form_date">Date Lost *</label>
+            <input type="date" name="date_lost_or_found" id="lostDate" class="form-control" required />
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:1rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <label data-i18n="form_desc">Description &amp; Identifying Details *</label>
+            <button type="button" class="voice-mic-btn" id="voiceMicBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+              <span data-i18n="btn_voice">Speak to Dictate</span>
+            </button>
+          </div>
+          <textarea name="description" id="lostDesc" class="form-control" rows="3" placeholder="Describe branding, stickers, case type, or specific distinguishing marks..." required></textarea>
+        </div>
+
+        <div class="form-group" style="margin-bottom:1.5rem;">
+          <label data-i18n="form_photo">Item Photo (optional)</label>
+          <input type="file" name="photo" id="lostPhotoInput" accept="image/*" class="form-control" onchange="previewPhoto(this)" />
+          <div class="form-preview-box" id="previewContainer" style="display:none;">
+            <img id="photoPreviewImg" class="form-preview-img" alt="Photo Preview" />
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-lost" id="submitBtn" style="width:100%; font-size:1.05rem; padding:0.85rem;" data-i18n="btn_submit_lost">
+          Submit Lost Item Report
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <script src="/js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Default to today's date
+      document.getElementById('lostDate').value = new Date().toISOString().split('T')[0];
+      initVoiceInput('lostDesc', 'voiceMicBtn');
+    });
+
+    function previewPhoto(input) {
+      const container = document.getElementById('previewContainer');
+      const img = document.getElementById('photoPreviewImg');
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          img.src = e.target.result;
+          container.style.display = 'flex';
+        };
+        reader.readAsDataURL(input.files[0]);
+      } else {
+        container.style.display = 'none';
+      }
+    }
+
+    async function submitLostForm(e) {
+      e.preventDefault();
+      if (!currentUser) {
+        showToast('Please log in to report a lost item', 'error');
+        setTimeout(() => { window.location.href = '/login.html'; }, 1000);
+        return;
+      }
+
+      const form = document.getElementById('lostForm');
+      const formData = new FormData(form);
+      const btn = document.getElementById('submitBtn');
+
+      btn.disabled = true;
+      btn.textContent = 'Analyzing with AI Matcher...';
+
+      try {
+        const res = await fetch('/api/items', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+        btn.disabled = false;
+        btn.textContent = 'Submit Lost Item Report';
+
+        if (res.ok && data.success) {
+          if (data.matchesFound > 0) {
+            showToast(`Report filed! AI Matcher found ${data.matchesFound} possible matches!`, 'success');
+            setTimeout(() => {
+              window.location.href = `/smart-match.html`;
+            }, 1200);
+          } else {
+            showToast('Lost item reported successfully. We will alert you when a match is found!', 'success');
+            setTimeout(() => {
+              window.location.href = '/index.html';
+            }, 1200);
+          }
+        } else {
+          showToast(data.error || 'Failed to submit report', 'error');
+        }
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = 'Submit Lost Item Report';
+        showToast('Network error filing report', 'error');
+      }
+    }
+  </script>
+</body>
+</html>
+

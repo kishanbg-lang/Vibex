@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Report Found Item – FINDIT</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <main class="main-content">
+    <div class="form-card">
+      <div class="form-header">
+        <span class="item-type-badge type-found" style="position:static; display:inline-block; margin-bottom:0.5rem;" data-i18n="nav_found">Report Found</span>
+        <h2 data-i18n="report_found_heading">Report a Found Item</h2>
+        <p style="font-size:0.88rem; color:var(--text-muted); margin-top:0.25rem;" data-i18n="report_found_sub">
+          Help a fellow student recover their property. Keep secret details safe for verification.
+        </p>
+      </div>
+
+      <form id="foundForm" onsubmit="submitFoundForm(event)" enctype="multipart/form-data">
+        <input type="hidden" name="type" value="found" />
+
+        <div class="form-group" style="margin-bottom:1rem;">
+          <label data-i18n="form_item_name">Item Name *</label>
+          <input type="text" name="title" id="foundTitle" class="form-control" placeholder="e.g. Black Wireless Over-Ear Headphones" required />
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
+          <div class="form-group">
+            <label data-i18n="form_category">Category *</label>
+            <select name="category" id="foundCategory" class="form-control" required>
+              <option value="">Select Category</option>
+              <option value="ID Card">ID Card / College Smart Card</option>
+              <option value="Earphones">Earphones / Headphones / AirPods</option>
+              <option value="Electronic Devices">Electronic Devices (Laptop, Tablet, Charger, Smartwatch)</option>
+              <option value="Calculator">Calculator (Scientific / Basic)</option>
+              <option value="Stationery">Stationery Items (Books, Notes, Geometry Box, Pen)</option>
+              <option value="Bottle">Bottle / Sipper / Flask</option>
+              <option value="Bag">Bag / Backpack / Pouch</option>
+              <option value="Keys">Keys (Hostel / Room / Vehicle)</option>
+              <option value="Wallet">Wallet / Cardholder / Purse</option>
+              <option value="Clothing">Clothing / Wearables (Jacket, Umbrella, Spectacles)</option>
+              <option value="Other">Other Items</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label data-i18n="form_color">Primary Color *</label>
+            <input type="text" name="color" id="foundColor" class="form-control" placeholder="e.g. Black, Blue, Silver" required />
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
+          <div class="form-group">
+            <label data-i18n="form_location">Found at Campus Location *</label>
+            <select name="location" id="foundLocation" class="form-control" required>
+              <option value="">Select Location</option>
+              <option value="Library">Library</option>
+              <option value="Canteen">Canteen</option>
+              <option value="Computer Lab">Computer Lab</option>
+              <option value="Main Block">Main Block</option>
+              <option value="Hostel">Hostel</option>
+              <option value="Sports Ground">Sports Ground</option>
+              <option value="Parking">Parking</option>
+              <option value="Auditorium">Auditorium</option>
+              <option value="Other / Unknown">Other / Unknown (Other Campus Area)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label data-i18n="form_date">Date Found *</label>
+            <input type="date" name="date_lost_or_found" id="foundDate" class="form-control" required />
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:1rem;">
+          <label>Where is the item now? *</label>
+          <select name="current_location_desc" id="foundCurrentLoc" class="form-control" required>
+            <option value="with me">With me (I am holding it safely)</option>
+            <option value="security desk">Handed over to Campus Security Desk</option>
+          </select>
+        </div>
+
+        <!-- PRIVATE VERIFICATION DETAIL -->
+        <div class="form-group" style="margin-bottom:1rem; background:#fffbeb; border:1px solid #fde68a; border-radius:8px; padding:0.85rem;">
+          <div style="display:flex; align-items:center; gap:0.4rem; margin-bottom:0.25rem;">
+            <span style="font-size:1.1rem;">🔒</span>
+            <label style="font-weight:700; color:#b45309;" data-i18n="form_private_detail">Private Verification Detail (NEVER SHOWN PUBLICLY) *</label>
+          </div>
+          <p style="font-size:0.8rem; color:#92400e; margin-bottom:0.5rem;" data-i18n="form_private_help">
+            This secret detail is kept hidden from all public pages. When someone claims this item, they must correctly describe this detail (e.g. "scratch on right hinge", "name Rahul etched inside", "blue sticker on bottom") to prove it's theirs!
+          </p>
+          <input type="text" name="private_detail" id="foundPrivateDetail" class="form-control" placeholder="e.g. Tiny scratch on right hinge and blue sticker on inner case" required />
+        </div>
+
+        <div class="form-group" style="margin-bottom:1rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <label data-i18n="form_desc">Public Description (General overview) *</label>
+            <button type="button" class="voice-mic-btn" id="voiceMicBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+              <span data-i18n="btn_voice">Speak to Dictate</span>
+            </button>
+          </div>
+          <textarea name="description" id="foundDesc" class="form-control" rows="3" placeholder="Describe the item without revealing the private verification detail..." required></textarea>
+        </div>
+
+        <div class="form-group" style="margin-bottom:1.5rem;">
+          <label data-i18n="form_photo">Item Photo (optional)</label>
+          <input type="file" name="photo" id="foundPhotoInput" accept="image/*" class="form-control" onchange="previewPhoto(this)" />
+          <div class="form-preview-box" id="previewContainer" style="display:none;">
+            <img id="photoPreviewImg" class="form-preview-img" alt="Photo Preview" />
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-found" id="submitBtn" style="width:100%; font-size:1.05rem; padding:0.85rem;" data-i18n="btn_submit_found">
+          Submit Found Item Report
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <script src="/js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('foundDate').value = new Date().toISOString().split('T')[0];
+      initVoiceInput('foundDesc', 'voiceMicBtn');
+    });
+
+    function previewPhoto(input) {
+      const container = document.getElementById('previewContainer');
+      const img = document.getElementById('photoPreviewImg');
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          img.src = e.target.result;
+          container.style.display = 'flex';
+        };
+        reader.readAsDataURL(input.files[0]);
+      } else {
+        container.style.display = 'none';
+      }
+    }
+
+    async function submitFoundForm(e) {
+      e.preventDefault();
+      if (!currentUser) {
+        showToast('Please log in to report a found item', 'error');
+        setTimeout(() => { window.location.href = '/login.html'; }, 1000);
+        return;
+      }
+
+      const form = document.getElementById('foundForm');
+      const formData = new FormData(form);
+      const btn = document.getElementById('submitBtn');
+
+      btn.disabled = true;
+      btn.textContent = 'Scanning for matching lost reports...';
+
+      try {
+        const res = await fetch('/api/items', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+        btn.disabled = false;
+        btn.textContent = 'Submit Found Item Report';
+
+        if (res.ok && data.success) {
+          if (data.matchesFound > 0) {
+            showToast(`Report filed! AI Matcher matched this with ${data.matchesFound} lost item(s)! Notification sent to the owner!`, 'success');
+            setTimeout(() => {
+              window.location.href = '/smart-match.html';
+            }, 1200);
+          } else {
+            showToast('Found item reported successfully. Thank you for helping!', 'success');
+            setTimeout(() => {
+              window.location.href = '/index.html';
+            }, 1200);
+          }
+        } else {
+          showToast(data.error || 'Failed to submit report', 'error');
+        }
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = 'Submit Found Item Report';
+        showToast('Network error filing report', 'error');
+      }
+    }
+  </script>
+</body>
+</html>
+

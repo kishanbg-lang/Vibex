@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 240" width="100%" height="100%">
+  <defs>
+    <linearGradient id="walBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </linearGradient>
+    <linearGradient id="leatherOuter" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#854d0e"/>
+      <stop offset="40%" stop-color="#713f12"/>
+      <stop offset="100%" stop-color="#451a03"/>
+    </linearGradient>
+    <linearGradient id="leatherInner" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#a16207"/>
+      <stop offset="100%" stop-color="#78350f"/>
+    </linearGradient>
+    <filter id="walShadow" x="-10%" y="-10%" width="120%" height="125%">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.22"/>
+    </filter>
+  </defs>
+
+  <rect width="300" height="240" rx="16" fill="url(#walBg)"/>
+  <circle cx="150" cy="120" r="90" fill="#fef3c7" opacity="0.4"/>
+
+  <g filter="url(#walShadow)">
+    <!-- Back Outer Leather (slightly visible behind fold) -->
+    <rect x="55" y="60" width="190" height="125" rx="12" fill="url(#leatherOuter)" stroke="#451a03" stroke-width="2"/>
+
+    <!-- Cash / Banknotes peaking from top cash sleeve -->
+    <path d="M 68,54 L 232,54 L 232,65 L 68,65 Z" fill="#86efac" stroke="#16a34a" stroke-width="1"/>
+    <text x="75" y="62" fill="#14532d" font-family="monospace" font-size="6" font-weight="900">₹500</text>
+    <text x="215" y="62" fill="#14532d" font-family="monospace" font-size="6" font-weight="900">₹500</text>
+
+    <!-- Main Bi-fold Interior (Left and Right panels) -->
+    <rect x="60" y="65" width="180" height="115" rx="10" fill="url(#leatherInner)" stroke="#92400e" stroke-width="1.5"/>
+
+    <!-- Stitched Perimeter Border -->
+    <rect x="64" y="69" width="172" height="107" rx="8" fill="none" stroke="#fef08a" stroke-width="1.2" stroke-dasharray="4,2.5" opacity="0.85"/>
+
+    <!-- Center Fold Spine -->
+    <line x1="150" y1="65" x2="150" y2="180" stroke="#451a03" stroke-width="3"/>
+    <line x1="150" y1="65" x2="150" y2="180" stroke="#fde047" stroke-width="1" stroke-dasharray="3,2" opacity="0.5"/>
+
+    <!-- Left Wing: Stacked Card Slots -->
+    <!-- Slot 1 (Top) with Student ID / Metro Card peaking -->
+    <rect x="68" y="78" width="76" height="26" rx="4" fill="#0284c7" stroke="#0369a1" stroke-width="1"/>
+    <text x="74" y="88" fill="#ffffff" font-family="system-ui" font-size="5.5" font-weight="800">METRO SMART PASS</text>
+    <!-- Slot 1 pocket leather flap -->
+    <rect x="66" y="86" width="80" height="20" rx="3" fill="#854d0e" stroke="#451a03" stroke-width="1"/>
+    <line x1="68" y1="88" x2="144" y2="88" stroke="#fef08a" stroke-width="1" stroke-dasharray="3,2" opacity="0.8"/>
+
+    <!-- Slot 2 with Bank card peaking -->
+    <rect x="68" y="104" width="76" height="26" rx="4" fill="#6366f1" stroke="#4338ca" stroke-width="1"/>
+    <circle cx="132" cy="112" r="3.5" fill="#facc15"/>
+    <!-- Slot 2 pocket leather flap -->
+    <rect x="66" y="112" width="80" height="22" rx="3" fill="#78350f" stroke="#451a03" stroke-width="1"/>
+    <line x1="68" y1="114" x2="144" y2="114" stroke="#fef08a" stroke-width="1" stroke-dasharray="3,2" opacity="0.8"/>
+
+    <!-- Slot 3 bottom leather flap -->
+    <rect x="66" y="138" width="80" height="34" rx="4" fill="#582506" stroke="#451a03" stroke-width="1"/>
+    <line x1="68" y1="140" x2="144" y2="140" stroke="#fef08a" stroke-width="1" stroke-dasharray="3,2" opacity="0.8"/>
+
+    <!-- Right Wing: Coin Pocket with Flap & Brass Snap Button -->
+    <rect x="155" y="80" width="78" height="92" rx="6" fill="#713f12" stroke="#451a03" stroke-width="1.5"/>
+    <line x1="158" y1="83" x2="230" y2="83" stroke="#fef08a" stroke-width="1" stroke-dasharray="3,2" opacity="0.8"/>
+    <!-- Coin flap (curved V-shape) -->
+    <path d="M 155,80 L 233,80 L 233,105 L 194,128 L 155,105 Z" fill="#854d0e" stroke="#451a03" stroke-width="1.2"/>
+    <path d="M 158,82 L 230,82 L 230,103 L 194,124 L 158,103 Z" fill="none" stroke="#fef08a" stroke-width="1" stroke-dasharray="3,2" opacity="0.8"/>
+    <!-- Metal Snap Button -->
+    <circle cx="194" cy="115" r="5.5" fill="#facc15" stroke="#a16207" stroke-width="1.2"/>
+    <circle cx="194" cy="115" r="2" fill="#78350f"/>
+  </g>
+</svg>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Smart Matches – FINDIT</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <main class="main-content">
+    <div class="section-header">
+      <div>
+        <h1 class="section-title" data-i18n="smart_match_title">⚡ AI Smart Matches</h1>
+        <p style="font-size:0.88rem; color:var(--text-muted);" data-i18n="smart_match_sub">
+          Automated multi-factor matching across Category (30%), Text Similarity (30%), Color (15%), Location (15%), and Date (10%).
+        </p>
+      </div>
+
+      <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+        <button class="btn btn-sm btn-primary" id="filterAllMatches" onclick="setMatchFilter('all')">All Matches</button>
+        <button class="btn btn-sm btn-outline" id="filterHighMatches" onclick="setMatchFilter('high')">80%+ (High)</button>
+        <button class="btn btn-sm btn-outline" id="filterMedMatches" onclick="setMatchFilter('med')">60-79% (Med)</button>
+        <button class="btn btn-sm btn-outline" id="filterMyMatches" onclick="setMatchFilter('my')">My Items</button>
+      </div>
+    </div>
+
+    <!-- Match Cards List -->
+    <div id="matchesContainer">
+      <div style="text-align:center; padding:3rem; color:var(--text-muted);">
+        Loading AI Smart Matches...
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/app.js"></script>
+  <script>
+    let allMatches = [];
+    let currentFilter = 'all';
+
+    async function loadMatches() {
+      const container = document.getElementById('matchesContainer');
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const matchId = urlParams.get('matchId');
+
+        let fetchUrl = '/api/matches';
+        if (matchId) {
+          fetchUrl += `?matchId=${matchId}`;
+        }
+
+        const res = await fetch(fetchUrl);
+        allMatches = await res.json();
+        renderMatches();
+      } catch (err) {
+        container.innerHTML = `<div style="text-align:center; color:#ef4444;">Failed to load matches.</div>`;
+      }
+    }
+
+    function renderMatches() {
+      const container = document.getElementById('matchesContainer');
+
+      let filtered = allMatches.filter(m => {
+        if (currentFilter === 'high') return m.score >= 80;
+        if (currentFilter === 'med') return m.score >= 60 && m.score < 80;
+        if (currentFilter === 'my') {
+          if (!currentUser) return false;
+          return m.lost_user_id === currentUser.id || m.found_user_id === currentUser.id;
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div style="text-align:center; padding:3.5rem; background:#fff; border-radius:12px; border:1px solid #e2e8f0;">
+            <div style="font-size:2.5rem; margin-bottom:0.5rem;">🔍</div>
+            <h3>No matches found in this category</h3>
+            <p style="color:#64748b; margin-top:0.35rem;">
+              When new lost or found items are reported with compatibility &ge; 50%, they appear here automatically.
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(m => {
+        let badgeClass = 'match-low';
+        if (m.score >= 80) badgeClass = 'match-high';
+        else if (m.score >= 60) badgeClass = 'match-medium';
+
+        return `
+          <div class="match-pair-card">
+            <div class="match-pair-header">
+              <div style="display:flex; align-items:center; gap:0.75rem;">
+                <span class="match-badge ${badgeClass}">${m.score}% MATCH</span>
+                <span style="font-size:0.85rem; color:#64748b;">Match ID #${m.id}</span>
+              </div>
+              <div style="font-size:0.85rem;">
+                ${m.found_where_now ? `<span class="meta-chip">📍 Location now: <strong>${escapeHtml(m.found_where_now)}</strong></span>` : ''}
+              </div>
+            </div>
+
+            <!-- "Why this matched" Callout Box -->
+            <div class="match-explain-box">
+              <strong>💡 Why this matched:</strong> ${escapeHtml(m.explanation)}
+            </div>
+
+            <!-- Comparison Columns -->
+            <div class="match-pair-columns">
+              <!-- Lost Side -->
+              <div style="background:#fef2f2; border:1px solid #fecaca; border-radius:8px; padding:1rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+                  <span class="item-type-badge type-lost" style="position:static;">LOST ITEM</span>
+                  <span class="item-status-pill status-${m.lost_status.toLowerCase().replace(/\s+/g, '-')}" style="position:static;">${m.lost_status}</span>
+                </div>
+                <div style="display:flex; gap:0.75rem; margin-bottom:0.5rem;">
+                  <img src="${m.lost_image || '/images/default-item.svg'}" style="width:70px; height:70px; border-radius:6px; object-fit:cover; background:#fff;" />
+                  <div>
+                    <h4 style="font-size:1rem; margin-bottom:0.25rem;">${escapeHtml(m.lost_title)}</h4>
+                    <div style="font-size:0.8rem; color:#64748b;">
+                      🏷️ ${escapeHtml(m.lost_category)} | 🎨 ${escapeHtml(m.lost_color)}<br/>
+                      📍 ${escapeHtml(m.lost_location)} | 📅 ${escapeHtml(m.lost_date)}
+                    </div>
+                  </div>
+                </div>
+                <p style="font-size:0.82rem; color:#475569; margin-bottom:0.5rem;">${escapeHtml(m.lost_desc)}</p>
+                <div style="font-size:0.75rem; color:#94a3b8;">Reported by: ${escapeHtml(m.lost_owner_name || 'Student')}</div>
+              </div>
+
+              <!-- Center VS -->
+              <div class="match-vs-divider">
+                <div style="font-weight:900; color:var(--text-light); font-size:1.1rem;">VS</div>
+                <div class="match-badge ${badgeClass}" style="font-size:1.1rem; padding:0.4rem 0.9rem;">
+                  ${m.score}%
+                </div>
+              </div>
+
+              <!-- Found Side -->
+              <div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px; padding:1rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+                  <span class="item-type-badge type-found" style="position:static;">FOUND ITEM</span>
+                  <span class="item-status-pill status-${m.found_status.toLowerCase().replace(/\s+/g, '-')}" style="position:static;">${m.found_status}</span>
+                </div>
+                <div style="display:flex; gap:0.75rem; margin-bottom:0.5rem;">
+                  <img src="${m.found_image || '/images/default-item.svg'}" style="width:70px; height:70px; border-radius:6px; object-fit:cover; background:#fff;" />
+                  <div>
+                    <h4 style="font-size:1rem; margin-bottom:0.25rem;">${escapeHtml(m.found_title)}</h4>
+                    <div style="font-size:0.8rem; color:#64748b;">
+                      🏷️ ${escapeHtml(m.found_category)} | 🎨 ${escapeHtml(m.found_color)}<br/>
+                      📍 ${escapeHtml(m.found_location)} | 📅 ${escapeHtml(m.found_date)}
+                    </div>
+                  </div>
+                </div>
+                <p style="font-size:0.82rem; color:#475569; margin-bottom:0.75rem;">${escapeHtml(m.found_desc)}</p>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:0.75rem; color:#94a3b8;">Found by: ${escapeHtml(m.found_finder_name || 'Finder')}</span>
+                  ${m.found_status !== 'Returned' ? `
+                    <button class="btn btn-sm btn-found" onclick="openClaimModal(${m.found_item_id}, '${escapeHtml(m.found_title).replace(/'/g, "\\'")}')">
+                      This is Mine (Claim)
+                    </button>
+                  ` : `
+                    <span class="role-badge" style="background:#cbd5e1; color:#334155;">Item Returned</span>
+                  `}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      applyLanguage(currentLang);
+    }
+
+    function setMatchFilter(filter) {
+      currentFilter = filter;
+      document.querySelectorAll('#filterAllMatches, #filterHighMatches, #filterMedMatches, #filterMyMatches').forEach(b => b.classList.remove('btn-primary'));
+      const map = {
+        'all': 'filterAllMatches',
+        'high': 'filterHighMatches',
+        'med': 'filterMedMatches',
+        'my': 'filterMyMatches'
+      };
+      const activeBtn = document.getElementById(map[filter]);
+      if (activeBtn) activeBtn.classList.add('btn-primary');
+      renderMatches();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadMatches();
+    });
+  </script>
+</body>
+</html>
